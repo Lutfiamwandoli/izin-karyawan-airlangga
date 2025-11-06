@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prototype Perizinan Airlangga — Final</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  :root{--blue:#0b63c6;--yellow:#ffcc00;--muted:#6b7280}
+  body{font-family:Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto; background:linear-gradient(135deg,var(--blue) 30%, var(--yellow) 100%); margin:0; color:#111}
+  header{background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:12px 20px;box-shadow:0 4px 16px rgba(2,6,23,0.08)}
+  .brand{font-weight:700;color:var(--blue)}
+  nav a{margin-left:12px;color:#0b3b6b;text-decoration:none;font-weight:600}
+  .container-main{max-width:1100px;margin:26px auto;padding:0 18px}
+  .grid{display:grid;grid-template-columns:240px 1fr;gap:18px}
+  nav.side{background:#fff;padding:16px;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.06)}
+  nav.side a{display:block;padding:8px;border-radius:8px;color:#0b3b6b;text-decoration:none;margin-bottom:6px}
+  nav.side a.active{background:#eef6ff;color:var(--blue);font-weight:700}
+  .card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.06)}
+  .small{font-size:13px;color:var(--muted)}
+  .muted{color:var(--muted)}
+  .btn-primary{background:linear-gradient(90deg,var(--blue),#0a4fb0);border:none}
+  .btn-ghost{background:transparent;border:1px solid #e6eefb;color:var(--blue)}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid #f1f5f9;font-size:14px}
+  .status-badge{padding:6px 8px;border-radius:999px;font-size:13px}
+  .status-diajukan{background:#fff7ed;color:#b45309;border:1px solid #fbe7c6}
+  .status-disetujui{background:#ecfdf5;color:#065f46;border:1px solid #bbf7d0}
+  .status-ditolak{background:#fff1f2;color:#991b1b;border:1px solid #fecaca}
+
+  /* Print area styles (hidden normally) */
+  #printArea{display:none}
+
+  /* responsive */
+  @media(max-width:900px){.grid{grid-template-columns:1fr}nav.side{display:flex;overflow:auto;gap:8px}}
+  /* Print rules */
+  @media print{
+    header, nav.side, .no-print {display:none}
+    body{background:white}
+    .container-main{max-width:100%;margin:0;padding:0}
+    .card{box-shadow:none;border-radius:0;padding:0}
+    #printArea{display:block}
+    main > *:not(#printArea){display:none}
+    @page{size:A4;margin:12mm}
+  }
+
+  /* print layout */
+  .paper{width:210mm;min-height:297mm;padding:20mm;background:#fff;color:#111;box-sizing:border-box}
+  .paper header{border-bottom:2px solid var(--blue);padding-bottom:8px;margin-bottom:10px}
+  .field-box{padding:6px;border:1px solid #e8eefc;border-radius:6px;background:#fbfeff}
+  .sign-box{min-height:80px;border-bottom:2px solid #000;margin-bottom:6px}
+  .sig-grid{display:flex;gap:12px;justify-content:space-between;align-items:flex-end}
+  .sig-cell{flex:1;text-align:center;min-width:150px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="brand">Perizinan • Yayasan Airlangga</div>
+      <div class="small">Pengguna: <strong id="loggedName">—</strong></div>
+    </div>
+  </header>
+
+  <div class="container-main">
+    <div class="grid">
+      <nav class="side">
+        <a href="#" class="nav-link active" data-view="dashboard">Dashboard</a>
+        <a href="#" class="nav-link" data-view="ajukan">Ajukan Izin</a>
+        <a href="#" class="nav-link" data-view="myrequests">Izin Saya</a>
+        <a href="#" class="nav-link" data-view="approval">Verifikasi</a>
+        <a href="#" class="nav-link" data-view="jenis">Jenis Izin</a>
+        <a href="#" class="nav-link" data-view="profile">Profil</a>
+      </nav>
+
+      <main>
+        <!-- Dashboard -->
+        <section id="dashboardView" class="card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5>Dashboard</h5>
+              <div class="small">Halo, <strong id="greetName">—</strong> — <span id="greetRole">—</span></div>
+            </div>
+            <div class="text-end small">
+              Atasan Langsung: <strong id="bossName">—</strong><br>
+              <button class="btn btn-ghost no-print" onclick="showPage('ajukan')">Ajukan Izin</button>
+            </div>
+          </div>
+
+          <div class="row mt-3 gx-3">
+            <div class="col-12 col-md-4">
+              <div class="card small text-center p-3">
+                <div class="muted">Izin Diproses</div>
+                <div style="font-weight:700;font-size:20px" id="statPending">0</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card small text-center p-3">
+                <div class="muted">Izin Disetujui</div>
+                <div style="font-weight:700;font-size:20px" id="statApproved">0</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card small text-center p-3">
+                <div class="muted">Izin Ditolak</div>
+                <div style="font-weight:700;font-size:20px" id="statRejected">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <h6 class="mb-2">Ringkasan Izin Terbaru</h6>
+            <table>
+              <thead><tr><th>Nama</th><th>Jenis</th><th>Periode</th><th>Jumlah</th><th>Status</th></tr></thead>
+              <tbody id="recentTable"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Ajukan Izin -->
+        <section id="ajukanView" class="card hidden">
+          <h5>Ajukan Izin</h5>
+          <div class="small muted mb-2">Form otomatis terisi dari data Anda (simulasi fetch). Ubah bila perlu.</div>
+
+          <form id="applyForm" class="mb-3">
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <label class="small">Nama</label>
+                <input id="f_nama" class="form-control" />
+              </div>
+              <div class="col-md-6 mb-2">
+                <label class="small">NIK</label>
+                <input id="f_nik" class="form-control" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4 mb-2">
+                <label class="small">Jabatan</label>
+                <input id="f_jabatan" class="form-control" />
+              </div>
+              <div class="col-md-4 mb-2">
+                <label class="small">Divisi</label>
+                <input id="f_divisi" class="form-control" />
+              </div>
+              <div class="col-md-4 mb-2">
+                <label class="small">TMM/TMT</label>
+                <input id="f_tmm" type="date" class="form-control" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4 mb-2">
+                <label class="small">Jenis Izin</label>
+                <select id="f_jenis" class="form-select"></select>
+              </div>
+              <div class="col-md-2 mb-2">
+                <label class="small">Jumlah Hari</label>
+                <input id="f_jumlah" type="number" min="1" class="form-control" />
+              </div>
+              <div class="col-md-3 mb-2">
+                <label class="small">Tanggal Mulai</label>
+                <input id="f_mulai" type="date" class="form-control" />
+              </div>
+              <div class="col-md-3 mb-2">
+                <label class="small">Tanggal Selesai</label>
+                <input id="f_selesai" type="date" class="form-control" />
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="small">Tanggal Masuk Kembali</label>
+              <input id="f_masuk" type="date" class="form-control" />
+            </div>
+
+            <div class="mb-2">
+              <label class="small">Keperluan</label>
+              <textarea id="f_keperluan" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="small">Bukti (url / catatan)</label>
+              <input id="f_bukti" class="form-control" />
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-primary no-print" id="submitApply">Kirim Pengajuan</button>
+              <button type="button" class="btn btn-ghost no-print" id="previewBtn">Preview Cetak</button>
+            </div>
+          </form>
+
+          <div id="previewBox" style="display:none" class="card p-3">
+            <h6>Preview Formulir (untuk dicetak)</h6>
+            <div class="small muted">Klik <strong>Preview Cetak</strong> lalu <strong>Print</strong> untuk mencetak formulir bergaris tanda tangan.</div>
+          </div>
+        </section>
+
+        <!-- Izin Saya -->
+        <section id="myrequestsView" class="card hidden">
+          <h5>Izin Saya</h5>
+          <table>
+            <thead><tr><th>Periode</th><th>Jenis</th><th>Jumlah</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="myRequestsTable"></tbody>
+          </table>
+        </section>
+
+        <!-- Verifikasi -->
+        <section id="approvalView" class="card hidden">
+          <h5>Verifikasi & Persetujuan</h5>
+          <div class="small muted mb-2">(Role HRD / Kepala Sekolah dapat menyetujui pengajuan yang diajukan)</div>
+          <table>
+            <thead><tr><th>Nama</th><th>Jenis</th><th>Periode</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="approvalTable"></tbody>
+          </table>
+        </section>
+
+        <!-- Jenis Izin -->
+        <section id="jenisView" class="card hidden">
+          <h5>Daftar Jenis Izin</h5>
+          <ul id="jenisList"></ul>
+        </section>
+
+        <!-- Profil -->
+        <section id="profileView" class="card hidden">
+          <h5>Profil</h5>
+          <div class="small">NIK: <span id="profNik"></span></div>
+          <div class="small">Nama: <span id="profNama"></span></div>
+          <div class="small">Jabatan: <span id="profJabatan"></span></div>
+          <div class="small">Atasan Langsung: <span id="profAtasan"></span></div>
+          <div class="small">Role: <span id="profRole"></span></div>
+        </section>
+
+        <!-- Print area (hidden in normal view, shown in print) -->
+        <div id="printArea" class="paper">
+          <header>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <h6 style="margin:0;color:var(--blue)">HRD - YA</h6>
+                <div style="font-weight:700">FORMULIR IJIN KETIDAKHADIRAN KARYAWAN</div>
+                <div style="font-size:12px">YAYASAN AIRLANGGA</div>
+              </div>
+              <div style="text-align:right;font-size:12px">
+                <div>No. Dok : Lampiran 1 A</div>
+                <div>SK No.389/SK.D/HRD-YA/Dir.Eks/X/2022</div>
+                <div style="margin-top:6px">Tgl : <span id="print_date">-</span></div>
+              </div>
+            </div>
+          </header>
+
+          <section style="margin-top:8px">
+            <div style="font-weight:700;margin-bottom:6px">DATA KARYAWAN</div>
+            <table style="width:100%;font-size:13px;margin-bottom:8px">
+              <tr><td style="width:18%">Nama</td><td style="width:32%"><div id="p_nama" class="field-box"></div></td><td style="width:16%">TMM/TMT</td><td style="width:34%"><div id="p_tmm" class="field-box"></div></td></tr>
+              <tr><td>NIK</td><td><div id="p_nik" class="field-box"></div></td><td>Jabatan</td><td><div id="p_jabatan" class="field-box"></div></td></tr>
+              <tr><td>Status</td><td><div id="p_status" class="field-box"></div></td><td>Telp/HP</td><td><div id="p_telp" class="field-box"></div></td></tr>
+              <tr><td>Divisi</td><td colspan="3"><div id="p_divisi" class="field-box"></div></td></tr>
+            </table>
+
+            <div style="font-weight:700;margin-top:6px">IJIN YANG DIMINTA</div>
+            <table style="width:100%;font-size:13px;margin-top:6px">
+              <tr><td style="width:20%">Jenis</td><td><div id="p_jenis" class="field-box"></div></td></tr>
+              <tr><td>Jumlah Hari</td><td><div id="p_jumlah" class="field-box"></div></td></tr>
+              <tr><td>Periode</td><td><div style="display:flex;gap:8px"><div style="flex:1"><div style="font-size:11px">Mulai</div><div id="p_mulai" class="field-box"></div></div><div style="flex:1"><div style="font-size:11px">Selesai</div><div id="p_selesai" class="field-box"></div></div></div></td></tr>
+              <tr><td>Tanggal Masuk Kembali</td><td><div id="p_masuk" class="field-box"></div></td></tr>
+              <tr><td>Keperluan</td><td><div id="p_keperluan" class="field-box"></div></td></tr>
+              <tr><td>Bukti</td><td><div id="p_bukti" class="field-box"></div></td></tr>
+            </table>
+
+            <div style="font-weight:700;margin-top:12px">PERSETUJUAN DIVISI</div>
+            <div class="muted small">Catatan Divisi: ...........................................................................................................................................................................</div>
+
+            <div style="margin-top:8px;font-size:13px">Permohonan ini telah disetujui dan diverifikasi oleh :</div>
+
+            <div class="sig-grid" style="margin-top:18px">
+              <div class="sig-cell">
+                <div class="sign-box sig-box"></div>
+                <div style="font-weight:700;margin-top:6px" id="p_name_atasan">Atasan Langsung</div>
+                <div class="small muted" id="p_nip_atasan"></div>
+                <div class="small muted">Tgl: <span id="p_date_atasan"></span></div>
+              </div>
+              <div class="sig-cell">
+                <div class="sign-box sig-box"></div>
+                <div style="font-weight:700;margin-top:6px" id="p_name_hrd">HRD Divisi</div>
+                <div class="small muted" id="p_nip_hrd"></div>
+                <div class="small muted">Tgl: <span id="p_date_hrd"></span></div>
+              </div>
+              <div class="sig-cell">
+                <div class="sign-box sig-box"></div>
+                <div style="font-weight:700;margin-top:6px" id="p_name_kepala">Kepala Divisi</div>
+                <div class="small muted" id="p_nip_kepala"></div>
+                <div class="small muted">Tgl: <span id="p_date_kepala"></span></div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;font-size:12px"><strong>Catatan:</strong> Kolom tanda tangan di atas disiapkan untuk <em>tanda tangan basah (manual)</em> setelah cetak.</div>
+          </section>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:12px;color:var(--muted);background:rgba(255,255,255,0.7);margin-top:18px">Prototype — Perizinan Yayasan Airlangga</footer>
+
+<script>
+/* -------------------------
+   Simulasi data (seolah fetch dari DB)
+   - users: tabel user (login)
+   - org: struktur organisasi / siapa HRD / kepala / dsb
+   - jenisIzinData: daftar jenis
+   - izins: pengajuan (memory)
+   ------------------------- */
+const org = [
+  { id:1, nama:"Dewi Septyani, S.Kom.", nip:"02.0322.0328", jab:"WAKA. KURIKULUM", role:"kepala_sekolah"},
+  { id:2, nama:"Rosmawati, S.Kom.", nip:"02.0595.0008", jab:"BENDAHARA", role:"bendahara"},
+  { id:3, nama:"Fardiyansyah Ibrahim, S.Kom", nip:"02.0711.0070", jab:"HRD", role:"hrd"},
+  { id:4, nama:"Muhammad Yani, S.Kom., M.T.I", nip:"02.0711.0069", jab:"KEPALA SEKOLAH", role:"kepala_sekolah"}
+  // ... bisa ditambah
+];
+
+const users = [
+  { id:101, nik:"02.2.0524.0422", nama:"Sena Nur Acksyavi", jabatan:"KA. PROGRAM KEAHLIAN PPLG", divisi:"SMK TI Airlangga Samarinda", status:"Guru Tetap Yayasan", telp:"081347182486", tmm_tmt:"2025-06-02", atasan_id:1, role:"karyawan"},
+  // bisa tambah akun lain untuk testing
+];
+
+const jenisIzinData = [
+  {id:1, nama_izin:"Sakit"},
+  {id:2, nama_izin:"Cuti Tahunan"},
+  {id:3, nama_izin:"Izin Dinas"},
+  {id:4, nama_izin:"Izin Keperluan Pribadi"}
+];
+
+let izins = [
+  {id:1,user_id:101,jenis_izin_id:1,tanggal_pengajuan:"2025-10-28",tanggal_mulai:"2025-10-28",tanggal_selesai:"2025-10-29",jumlah_hari:2,keperluan:"Sakit",bukti:"Surat Dokter",status_izin:"disetujui"}
+];
+
+/* current user (simulasi login) */
+let currentUser = users[0];
+
+/* helper */
+const el = q=>document.querySelector(q);
+const els = q=>Array.from(document.querySelectorAll(q));
+
+/* populate UI lists and stats */
+function populateJenis(){
+  const sel = el('#f_jenis'); sel.innerHTML = '';
+  const list = el('#jenisList'); list.innerHTML = '';
+  jenisIzinData.forEach(j=>{
+    const opt = document.createElement('option'); opt.value=j.id; opt.text=j.nama_izin; sel.appendChild(opt);
+    const li = document.createElement('li'); li.textContent = j.nama_izin; list.appendChild(li);
+  });
+}
+
+function populateStats(){
+  const pending = izins.filter(i=>i.status_izin==='diajukan').length;
+  const approved = izins.filter(i=>i.status_izin==='disetujui').length;
+  const rejected = izins.filter(i=>i.status_izin==='ditolak').length;
+  el('#statPending').innerText = pending;
+  el('#statApproved').innerText = approved;
+  el('#statRejected').innerText = rejected;
+
+  // recent table
+  const tbody = el('#recentTable'); tbody.innerHTML='';
+  izins.slice().reverse().slice(0,5).forEach(r=>{
+    const u = users.find(x=>x.id===r.user_id);
+    const j = jenisIzinData.find(x=>x.id===r.jenis_izin_id) || {nama_izin:'-'}
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${u?.nama||'-'}</td><td>${j.nama_izin}</td><td>${r.tanggal_mulai} → ${r.tanggal_selesai}</td><td>${r.jumlah_hari||'-'}</td><td><span class='status-badge status-${r.status_izin}'>${r.status_izin}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function populateMyRequests(){
+  const tbody = el('#myRequestsTable'); tbody.innerHTML='';
+  izins.filter(i=>i.user_id===currentUser.id).forEach(r=>{
+    const j = jenisIzinData.find(x=>x.id===r.jenis_izin_id) || {nama_izin:'-'};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.tanggal_mulai} → ${r.tanggal_selesai}</td><td>${j.nama_izin}</td><td>${r.jumlah_hari||'-'}</td><td><span class='status-badge status-${r.status_izin}'>${r.status_izin}</span></td><td><button class='btn btn-ghost btn-sm' onclick='viewDetail(${r.id})'>Detail</button></td>`;
+    tbody.appendChild(tr);
+  })
+}
+
+function populateApprovalTable(){
+  const tbody = el('#approvalTable'); tbody.innerHTML='';
+  izins.forEach(r=>{
+    const u = users.find(x=>x.id===r.user_id);
+    const j = jenisIzinData.find(x=>x.id===r.jenis_izin_id) || {nama_izin:'-'};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${u?.nama||'-'}</td><td>${j.nama_izin}</td><td>${r.tanggal_mulai} → ${r.tanggal_selesai}</td><td><span class='status-badge status-${r.status_izin}'>${r.status_izin}</span></td><td>${r.status_izin==='diajukan'?`<button class='btn btn-primary btn-sm' onclick='approve(${r.id})'>Setujui</button> <button class='btn btn-ghost btn-sm' onclick='reject(${r.id})'>Tolak</button>`:'-'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* actions */
+function approve(id){
+  const row=izins.find(x=>x.id===id); if(!row) return; row.status_izin='disetujui'; refreshAll(); alert('Izin disetujui (prototype)');
+}
+function reject(id){
+  const row=izins.find(x=>x.id===id); if(!row) return; row.status_izin='ditolak'; refreshAll(); alert('Izin ditolak (prototype)');
+}
+function viewDetail(id){
+  const r = izins.find(x=>x.id===id); if(!r) return alert('Tidak ditemukan'); const j = jenisIzinData.find(x=>x.id===r.jenis_izin_id) || {};
+  alert(`Detail\\nJenis: ${j.nama_izin}\\nPeriode: ${r.tanggal_mulai} → ${r.tanggal_selesai}\\nJumlah hari: ${r.jumlah_hari||'-'}\\nStatus: ${r.status_izin}`);
+}
+
+/* fill user data into form when open Ajukan */
+function fillFormFromUser(){
+  el('#f_nama').value = currentUser.nama || '';
+  el('#f_nik').value = currentUser.nik || '';
+  el('#f_jabatan').value = currentUser.jabatan || '';
+  el('#f_divisi').value = currentUser.divisi || '';
+  if(currentUser.tmm_tmt) el('#f_tmm').value = currentUser.tmm_tmt;
+  // default dates blank
+  el('#f_jumlah').value = '';
+  el('#f_mulai').value = '';
+  el('#f_selesai').value = '';
+  el('#f_masuk').value = '';
+  el('#f_keperluan').value = '';
+  el('#f_bukti').value = '';
+}
+
+/* submit apply (memory only) */
+el('#submitApply').addEventListener('click', ()=>{
+  const jenisId = parseInt(el('#f_jenis').value);
+  const mulai = el('#f_mulai').value;
+  const selesai = el('#f_selesai').value;
+  if(!mulai || !selesai) return alert('Isi tanggal mulai dan selesai');
+  const d1 = new Date(mulai), d2 = new Date(selesai);
+  const days = Math.round((d2 - d1)/(1000*60*60*24)) + 1;
+  const newid = izins.length? Math.max(...izins.map(i=>i.id))+1 : 1;
+  const pengajuan = {
+    id:newid,
+    user_id: currentUser.id,
+    jenis_izin_id: jenisId,
+    tanggal_pengajuan: (new Date()).toISOString().slice(0,10),
+    tanggal_mulai: mulai,
+    tanggal_selesai: selesai,
+    jumlah_hari: days,
+    keperluan: el('#f_keperluan').value,
+    bukti: el('#f_bukti').value,
+    status_izin: 'diajukan'
+  };
+  izins.push(pengajuan);
+  refreshAll();
+  alert('Pengajuan terkirim (prototype). Silakan gunakan "Preview Cetak" untuk melihat formulir siap cetak.');
+});
+
+/* preview cetak: isi print area from form */
+el('#previewBtn').addEventListener('click', ()=>{
+  populatePrintAreaFromForm();
+  // show print area visually on screen (for preview); print CSS will handle actual print layout
+  window.scrollTo(0,0);
+  // advise user to use print dialog
+  setTimeout(()=> window.print(), 200);
+});
+
+/* populate print area */
+function populatePrintAreaFromForm(){
+  // form values (if empty, fallback to currentUser data or last izins)
+  const nama = el('#f_nama').value || currentUser.nama;
+  const nik = el('#f_nik').value || currentUser.nik;
+  const jab = el('#f_jabatan').value || currentUser.jabatan;
+  const div = el('#f_divisi').value || currentUser.divisi;
+  const tmm = el('#f_tmm').value ? new Date(el('#f_tmm').value).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : (currentUser.tmm_tmt? new Date(currentUser.tmm_tmt).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : '');
+  const jenisObj = jenisIzinData.find(j=>j.id===parseInt(el('#f_jenis').value)) || {nama_izin:'-'};
+  const jumlah = el('#f_jumlah').value || '-';
+  const mulai = el('#f_mulai').value ? new Date(el('#f_mulai').value).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : '-';
+  const selesai = el('#f_selesai').value ? new Date(el('#f_selesai').value).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : '-';
+  const masuk = el('#f_masuk').value ? new Date(el('#f_masuk').value).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : '-';
+  const keperluan = el('#f_keperluan').value || '-';
+  const bukti = el('#f_bukti').value || '-';
+
+  el('#p_nama').textContent = nama;
+  el('#p_nik').textContent = nik;
+  el('#p_jabatan').textContent = jab;
+  el('#p_divisi').textContent = div;
+  el('#p_tmm').textContent = tmm;
+  el('#p_jenis').textContent = jenisObj.nama_izin;
+  el('#p_jumlah').textContent = jumlah;
+  el('#p_mulai').textContent = mulai;
+  el('#p_selesai').textContent = selesai;
+  el('#p_masuk').textContent = masuk;
+  el('#p_keperluan').textContent = keperluan;
+  el('#p_bukti').textContent = bukti;
+
+  // signatories: atasan from currentUser.atasan_id; hrd by role; kepala by role
+  const atasan = org.find(o => o.id === currentUser.atasan_id) || {nama:'-', nip:''};
+  const hrd = org.find(o => o.role === 'hrd') || {nama:'-', nip:''};
+  const kepala = org.find(o => o.role === 'kepala_sekolah') || org.find(o=> o.jab && /kepala/i.test(o.jab)) || {nama:'-', nip:''};
+
+  el('#p_name_atasan').textContent = atasan.nama || '-';
+  el('#p_nip_atasan').textContent = atasan.nip || '';
+  el('#p_name_hrd').textContent = hrd.nama || '-';
+  el('#p_nip_hrd').textContent = hrd.nip || '';
+  el('#p_name_kepala').textContent = kepala.nama || '-';
+  el('#p_nip_kepala').textContent = kepala.nip || '';
+
+  const today = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+  el('#p_date_atasan').textContent = today;
+  el('#p_date_hrd').textContent = today;
+  el('#p_date_kepala').textContent = today;
+  el('#print_date').textContent = today;
+}
+
+/* navigation and initial populate */
+els('.nav-link').forEach(a=>a.addEventListener('click', e=>{
+  e.preventDefault();
+  els('.nav-link').forEach(x=>x.classList.remove('active'));
+  a.classList.add('active');
+  const view = a.dataset.view;
+  showPage(view);
+}));
+
+function showPage(name){
+  ['dashboard','ajukan','myrequests','approval','jenis','profile'].forEach(v=>{
+    const elv = document.getElementById(v+'View');
+    if(!elv) return;
+    if(v===name) elv.classList.remove('hidden'); else elv.classList.add('hidden');
+  });
+  if(name === 'ajukan'){ fillFormFromUser(); el('#previewBox').style.display='none'; }
+  if(name === 'dashboard'){}
+  if(name === 'approval'){ populateApprovalTable(); }
+  if(name === 'myrequests') populateMyRequests();
+}
+
+/* initial UI values */
+function populateAll(){
+  populateJenis();
+  populateStats();
+  populateMyRequests();
+  populateApprovalTable();
+  el('#loggedName').innerText = currentUser.nama;
+  el('#greetName').innerText = currentUser.nama;
+  el('#greetRole').innerText = currentUser.role;
+  el('#bossName').innerText = org.find(o=>o.id===currentUser.atasan_id)?.nama || '-';
+  el('#profNik').innerText = currentUser.nik || '-';
+  el('#profNama').innerText = currentUser.nama;
+  el('#profJabatan').innerText = currentUser.jabatan || '-';
+  el('#profAtasan').innerText = org.find(o=>o.id===currentUser.atasan_id)?.nama || '-';
+  el('#profRole').innerText = currentUser.role;
+}
+
+/* page load */
+populateAll();
+showPage('dashboard');
+</script>
+
+</body>
+</html>
