@@ -1,5 +1,6 @@
 import express from "express";
 import { verifyToken } from "../middleware/authMiddleware.js";
+import { addKaryawan, deleteKaryawan, getAllKaryawan, updateKaryawan } from "../controllers/adminController.js";
 
 const router = express.Router();
 
