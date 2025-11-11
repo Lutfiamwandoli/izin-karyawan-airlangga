@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Jabatan {
+  id          Int       @id @default(autoincrement())
+  nama        String
+  atasan_id   Int? 
+  atasan      Jabatan?  @relation("AtasanRelation", fields: [atasan_id], references: [id])
+  bawahan     Jabatan[] @relation("AtasanRelation")
+  users       users[]
+
+  @@map("jabatan")
+}
+
+model users {
+  id           Int      @id @default(autoincrement())
+  nik          String   @unique
+  nama         String
+  jabatan_id   Int?
+  divisi       String?
+  status       String?
+  telp         String?
+  tmm_tmt      DateTime?
+  role         Role     @default(karyawan)
+  password     String
+  jabatan      Jabatan? @relation(fields: [jabatan_id], references: [id])
+  izin         izin[]   @relation("UserIzin")
+  verifikasi   verifikasi_izin[] @relation("Verifikator")
+
+  @@map("users")
+}
+
+model jenis_izin {
+  id          Int     @id @default(autoincrement())
+  nama_izin   String
+  keterangan  String?
+  izin        izin[]
+
+  @@map("jenis_izin")
+}
+
+model izin {
+  id                    Int      @id @default(autoincrement())
+  user_id               Int
+  jenis_izin_id         Int
+  tanggal_pengajuan     DateTime? @default(now())
+  tanggal_mulai         DateTime
+  tanggal_selesai       DateTime
+  tanggal_masuk_kembali DateTime?
+  jumlah_hari           Int?
+  keperluan             String?
+  bukti                 String?
+  status_izin           StatusIzin @default(diajukan)
+
+  user        users      @relation("UserIzin", fields: [user_id], references: [id])
+  jenis_izin  jenis_izin @relation(fields: [jenis_izin_id], references: [id])
+  verifikasi  verifikasi_izin[]
+
+  @@map("izin")
+}
+
+model verifikasi_izin {
+  id                 Int       @id @default(autoincrement())
+  izin_id            Int
+  verifikator_id     Int
+  status_verifikasi  StatusVerifikasi @default(menunggu)
+  tanggal_verifikasi DateTime? @default(now())
+  catatan            String?
+
+  izin        izin  @relation(fields: [izin_id], references: [id])
+  verifikator users @relation("Verifikator", fields: [verifikator_id], references: [id])
+
+  @@map("verifikasi_izin")
+}
+
+enum Role {
+  admin
+  karyawan
+  hrd
+  kepala_sekolah
+}
+
+enum StatusIzin {
+  diajukan
+  disetujui
+  ditolak
+}
+
+enum StatusVerifikasi {
+  menunggu
+  disetujui
+  ditolak
+}
