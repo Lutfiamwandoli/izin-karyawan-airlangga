@@ -7,46 +7,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//
+// =============================
+// 📋 MASTER DATA
+// =============================
+model Atasan {
+  id       Int       @id @default(autoincrement())
+  nama     String
+  bawahan  Jabatan[] @relation("AtasanRelation")
+
+  @@map("atasan")
+}
+
 model Jabatan {
-  id          Int       @id @default(autoincrement())
-  nama        String
-  atasan_id   Int? 
-  atasan      Jabatan?  @relation("AtasanRelation", fields: [atasan_id], references: [id])
-  bawahan     Jabatan[] @relation("AtasanRelation")
-  users       users[]
+  id         Int      @id @default(autoincrement())
+  nama       String
+  atasan_id  Int?
+  atasan     Atasan?  @relation("AtasanRelation", fields: [atasan_id], references: [id])
+  users      Users[]
 
   @@map("jabatan")
 }
 
-model users {
-  id           Int      @id @default(autoincrement())
-  nik          String   @unique
+model Users {
+  id           Int       @id @default(autoincrement())
+  nik          String    @unique
   nama         String
   jabatan_id   Int?
   divisi       String?
   status       String?
   telp         String?
   tmm_tmt      DateTime?
-  role         Role     @default(karyawan)
+  role         Role      @default(karyawan)
   password     String
-  jabatan      Jabatan? @relation(fields: [jabatan_id], references: [id])
-  izin         izin[]   @relation("UserIzin")
-  verifikasi   verifikasi_izin[] @relation("Verifikator")
+  jabatan      Jabatan?  @relation(fields: [jabatan_id], references: [id])
+  izin         Izin[]    @relation("UserIzin")
+  verifikasi   VerifikasiIzin[] @relation("Verifikator")
 
   @@map("users")
 }
 
-model jenis_izin {
+//
+// =============================
+// 🕒 IZIN & VERIFIKASI
+// =============================
+model JenisIzin {
   id          Int     @id @default(autoincrement())
   nama_izin   String
   keterangan  String?
-  izin        izin[]
+  izin        Izin[]
 
   @@map("jenis_izin")
 }
 
-model izin {
-  id                    Int      @id @default(autoincrement())
+model Izin {
+  id                    Int       @id @default(autoincrement())
   user_id               Int
   jenis_izin_id         Int
   tanggal_pengajuan     DateTime? @default(now())
@@ -58,14 +73,14 @@ model izin {
   bukti                 String?
   status_izin           StatusIzin @default(diajukan)
 
-  user        users      @relation("UserIzin", fields: [user_id], references: [id])
-  jenis_izin  jenis_izin @relation(fields: [jenis_izin_id], references: [id])
-  verifikasi  verifikasi_izin[]
+  user        Users      @relation("UserIzin", fields: [user_id], references: [id])
+  jenis_izin  JenisIzin  @relation(fields: [jenis_izin_id], references: [id])
+  verifikasi  VerifikasiIzin[]
 
   @@map("izin")
 }
 
-model verifikasi_izin {
+model VerifikasiIzin {
   id                 Int       @id @default(autoincrement())
   izin_id            Int
   verifikator_id     Int
@@ -73,12 +88,16 @@ model verifikasi_izin {
   tanggal_verifikasi DateTime? @default(now())
   catatan            String?
 
-  izin        izin  @relation(fields: [izin_id], references: [id])
-  verifikator users @relation("Verifikator", fields: [verifikator_id], references: [id])
+  izin        Izin  @relation(fields: [izin_id], references: [id])
+  verifikator Users @relation("Verifikator", fields: [verifikator_id], references: [id])
 
   @@map("verifikasi_izin")
 }
 
+//
+// =============================
+// 🧩 ENUM
+// =============================
 enum Role {
   admin
   karyawan
