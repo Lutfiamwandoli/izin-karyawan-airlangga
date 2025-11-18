@@ -3,6 +3,28 @@ const prisma = new PrismaClient();
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
+export const getIzin = async (req, res) => {
+  try {
+    const izin = await prisma.izin.findMany({
+      include: {
+        jenis_izin: true,
+        user: {
+          include: {
+            jabatan: true   // ← INI YANG KURANG
+          }
+        },
+        verifikasi: true
+      }
+    });
+
+    res.json(izin);
+  } catch (error) {
+    res.status(500).json({ message: "Gagal mengambil data izin", error });
+  }
+};
+
+
+
 export const ajukanIzin = async (req, res) => {
   try {
     const {
@@ -174,4 +196,8 @@ export const verifikasiIzin = async (req, res) => {
     console.error("Error verifikasi izin:", error);
     res.status(500).json({ message: "Terjadi kesalahan pada server" });
   }
+};
+export const getJenisIzin = async (req, res) => {
+  const data = await prisma.jenisIzin.findMany();
+  res.json(data);
 };

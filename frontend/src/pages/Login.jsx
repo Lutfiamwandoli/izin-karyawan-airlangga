@@ -23,7 +23,7 @@ export default function Login() {
       const role = res.data.user.role;
       if (role === "admin") navigate("/admin");
       else if (role === "hrd") navigate("/hrd");
-      else if (role === "kepala_sekolah") navigate("/kepala");
+      else if (role === "atasan") navigate("/atasan");
       else navigate("/karyawan");
 
     } catch (err) {

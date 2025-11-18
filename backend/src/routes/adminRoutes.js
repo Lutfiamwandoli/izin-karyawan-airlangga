@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../middleware/authMiddleware.js";
-import { addAtasan, addJabatan, addKaryawan, deleteAtasan, deleteJabatan, deleteKaryawan, getAllAtasan, getAllJabatan, getAllKaryawan, updateAtasan, updateJabatan, updateKaryawan } from "../controllers/adminController.js";
+import { addAtasan, addJabatan, addKaryawan, deleteAtasan, deleteJabatan, deleteKaryawan, getAllAtasan, getAllJabatan, getAllKaryawan, getKaryawanById, updateAtasan, updateJabatan, updateKaryawan } from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -13,6 +13,7 @@ router.use(verifyToken, (req, res, next) => {
 
 router.get("/karyawan", getAllKaryawan);
 router.post("/karyawan", addKaryawan);
+router.get("/karyawan/:id", getKaryawanById);
 router.put("/karyawan/:id", updateKaryawan);
 router.delete("/karyawan/:id", deleteKaryawan);
 router.get("/jabatan", getAllJabatan);

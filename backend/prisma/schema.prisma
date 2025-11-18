@@ -40,6 +40,9 @@ model Users {
   tmm_tmt      DateTime?
   role         Role      @default(karyawan)
   password     String
+  atasan_id    Int?
+  atasan       Users? @relation("AtasanUsers", fields: [atasan_id], references: [id])
+  bawahan      Users[] @relation("AtasanUsers")
   jabatan      Jabatan?  @relation(fields: [jabatan_id], references: [id])
   izin         Izin[]    @relation("UserIzin")
   verifikasi   VerifikasiIzin[] @relation("Verifikator")

@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { Link } from "react-router-dom";
 
-export default function KaryawanList() {
+export default function AtasanList() {
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
-    const res = await api.get("/api/admin/karyawan");
-    setData(res.data);
+    try {
+      const res = await api.get("/api/admin/atasan");
+      setData(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -17,37 +21,40 @@ export default function KaryawanList() {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Data Karyawan</h1>
-        <Link to="/admin/karyawan/add" className="btn btn-primary">
-          + Tambah Karyawan
+        <h1 className="text-2xl font-bold mb-4">Data Atasan</h1>
+        <Link to="/admin/atasan/add" className="btn btn-primary">
+          + Tambah Atasan
         </Link>
       </div>
 
       <table className="table w-full bg-white">
         <thead>
           <tr>
-            <th>NIK</th>
-            <th>Nama</th>
-            <th>Jabatan</th>
+            <th>No</th>
+            <th>Nama Atasan</th>
             <th>Aksi</th>
           </tr>
         </thead>
 
         <tbody>
-          {data.map((k) => (
-            <tr key={k.id}>
-              <td>{k.nik}</td>
-              <td>{k.nama}</td>
-              <td>{k.jabatan?.nama || "-"}</td>
+          {data.map((a, i) => (
+            <tr key={a.id}>
+              <td>{i + 1}</td>
+              <td>{a.nama}</td>
+
               <td>
-                <Link to={`/admin/karyawan/edit/${k.id}`} className="btn btn-sm btn-warning mr-2">
+                <Link
+                  to={`/admin/atasan/edit/${a.id}`}
+                  className="btn btn-sm btn-warning mr-2"
+                >
                   Edit
                 </Link>
-                <button
+
+<button
   className="btn btn-sm btn-error"
   onClick={async () => {
-    if (confirm("Hapus karyawan ini?")) {
-      await api.delete(`/api/admin/karyawan/${k.id}`);
+    if (confirm("Hapus atasan ini?")) {
+      await api.delete(`/api/admin/atasan/${a.id}`);
       fetchData();
     }
   }}

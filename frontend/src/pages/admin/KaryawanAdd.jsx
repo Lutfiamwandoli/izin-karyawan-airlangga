@@ -34,11 +34,20 @@ export default function AddKaryawan() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await api.post("api/admin/karyawan", form);
-    alert("Karyawan berhasil ditambahkan!");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const payload = {
+    ...form,
+    jabatan_id: form.jabatan_id ? parseInt(form.jabatan_id) : null,
+    atasan_id: form.atasan_id ? parseInt(form.atasan_id) : null,
   };
+  console.log(payload);
+  
+
+  await api.post("api/admin/karyawan", payload);
+  alert("Karyawan berhasil ditambahkan!");
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -131,7 +140,7 @@ export default function AddKaryawan() {
         className="border p-2 w-full"
         onChange={handleChange}
       />
-
+  
       <input
         type="password"
         name="password"

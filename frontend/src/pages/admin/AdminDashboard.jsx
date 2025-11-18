@@ -6,4 +6,5 @@ export default function AdminDashboard() {
       <p>Selamat datang di panel admin.</p>
     </div>
   );
-}
+}   
+  

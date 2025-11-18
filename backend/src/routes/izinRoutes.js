@@ -4,6 +4,8 @@ import {
   getIzinSaya,
   getIzinBawahan,
   verifikasiIzin,
+  getJenisIzin,
+  getIzin,
 } from "../controllers/izinController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import { allowRoles } from "../middleware/roleMiddleware.js";
@@ -20,6 +22,12 @@ router.post(
   ajukanIzin
 );
 
+router.get(
+  "/user",
+  verifyToken,
+  allowRoles("karyawan", "hrd", "atasan", "kepala_sekolah"),
+  getIzin
+);
 router.get(
   "/saya",
   verifyToken,
@@ -40,5 +48,7 @@ router.post(
   allowRoles("hrd", "atasan", "kepala_sekolah"),
   verifikasiIzin
 );
+router.get("/jenis-izin", verifyToken,
+  allowRoles("karyawan","hrd", "atasan", "kepala_sekolah"), getJenisIzin);
 
 export default router;

@@ -26,6 +26,7 @@ export const addKaryawan = async (req, res) => {
       tmm_tmt,
       role,
       password,
+      atasan_id,
     } = req.body;
 
     const newUser = await prisma.users.create({
@@ -39,12 +40,36 @@ export const addKaryawan = async (req, res) => {
         tmm_tmt: tmm_tmt ? new Date(tmm_tmt) : null,
         role,
         password,
+        atasan_id: Number(atasan_id)
       },
     });
 
     res.json(newUser);
   } catch (error) {
-    res.status(500).json({ message: "Gagal menambahkan users", error });
+  console.error("ERROR CREATE KARYAWAN:", error);
+  res.status(500).json({ message: "Gagal menambahkan karyawan", error: error.message });
+}
+
+  console.log("DATA MASUK:", req.body);
+
+};
+export const getKaryawanById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await prisma.users.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        jabatan: true,
+        atasan: true,
+      }
+    });
+
+    if (!user) return res.status(404).json({ message: "Karyawan tidak ditemukan" });
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Gagal mengambil data karyawan", error });
   }
 };
 
@@ -61,6 +86,7 @@ export const updateKaryawan = async (req, res) => {
       tmm_tmt,
       role,
       password,
+      atasan_id,
     } = req.body;
 
     const data = {
@@ -72,6 +98,7 @@ export const updateKaryawan = async (req, res) => {
       telp,
       tmm_tmt: tmm_tmt ? new Date(tmm_tmt) : null,
       role,
+      atasan_id,
     };
 
     if (password) data.password = password;

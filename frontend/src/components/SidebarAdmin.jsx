@@ -18,6 +18,9 @@ export default function SidebarAdmin() {
         <li>
           <Link to="/admin/jabatan" className="block hover:text-green-300">Data Jabatan</Link>
         </li>
+        <li>
+          <Link to="/admin/atasan" className="block hover:text-green-300">Data Atasan</Link>
+        </li>
       </ul>
     </div>
   );
