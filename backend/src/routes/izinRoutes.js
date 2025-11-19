@@ -29,7 +29,7 @@ router.get(
   getIzin
 );
 router.get(
-  "/saya",
+  "/saya",      
   verifyToken,
   allowRoles("karyawan", "hrd", "atasan", "kepala_sekolah"),
   getIzinSaya

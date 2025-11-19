@@ -128,6 +128,7 @@ export default function AjukanIzin() {
               readOnly
             />
           </div>
+        </div>
 
           {/* Jenis Izin */}
           <div>
@@ -147,8 +148,7 @@ export default function AjukanIzin() {
               ))}
             </select>
           </div>
-
-          {/* Jumlah Hari */}
+          {/* Jumlah Hari
           <div>
             <label className="font-medium">Jumlah Hari</label>
             <input
@@ -156,8 +156,8 @@ export default function AjukanIzin() {
               value={form.jumlah_hari}
               readOnly
             />
-          </div>
-        </div>
+          </div> */}
+        
 
         {/* Tanggal Mulai */}
         <div>

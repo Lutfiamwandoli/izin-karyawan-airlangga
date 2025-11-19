@@ -18,6 +18,7 @@ import Login from "./pages/login";
 import Dashboard from "./pages/karyawan/Dashboard";
 import KaryawanLayout from "./pages/karyawan/KaryawanLayout";
 import AjukanIzin from "./pages/karyawan/AjukanIzin";
+import RiwayatIzin from "./pages/karyawan/RiwayatIzin";
 
 const router = createBrowserRouter([
   {
@@ -52,8 +53,9 @@ const router = createBrowserRouter([
     element: <KaryawanLayout />,
     children: [
       { index: true, element: <Dashboard/> },
-      { path: "izin/ajukan", element: <AjukanIzin/> }
-      
+      { path: "izin/ajukan", element: <AjukanIzin/> },
+      { path: "izin", element: <RiwayatIzin/> }
+            
     ],
   },
   

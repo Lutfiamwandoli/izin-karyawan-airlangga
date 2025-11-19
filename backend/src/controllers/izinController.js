@@ -10,8 +10,9 @@ export const getIzin = async (req, res) => {
         jenis_izin: true,
         user: {
           include: {
-            jabatan: true   // ← INI YANG KURANG
-          }
+            jabatan: true,   
+            atasan: true,    
+          },
         },
         verifikasi: true
       }
@@ -112,7 +113,20 @@ export const getIzinSaya = async (req, res) => {
   try {
     const izin = await prisma.izin.findMany({
       where: { user_id: req.user.id },
-      include: { jenis_izin: true, verifikasi: true },
+      include: { 
+        jenis_izin: true, 
+        user: {
+          include: {
+            jabatan: {
+              include:{
+                atasan: true,
+              },
+            },   
+                
+          },
+        },
+        verifikasi: true },
+      
       orderBy: { id: "desc" },
     });
 
