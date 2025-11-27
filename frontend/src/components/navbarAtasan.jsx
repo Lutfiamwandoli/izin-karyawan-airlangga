@@ -2,7 +2,7 @@ import { FiBell, FiUser } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
 
-export default function NavbarKaryawan() {
+export default function NavbarAtasan() {
   const navigate = useNavigate();
 
   return (
@@ -15,7 +15,7 @@ export default function NavbarKaryawan() {
 
         <div
           className="bg-white text-blue-900 rounded-full p-2 cursor-pointer"
-          onClick={() => navigate("/karyawan/profil")}
+          onClick={() => navigate("/atasan/profil")}
         >
           <FiUser size={18} />
         </div>

@@ -40,12 +40,14 @@ model Users {
   tmm_tmt      DateTime?
   role         Role      @default(karyawan)
   password     String
+  foto         String?
   atasan_id    Int?
   atasan       Users? @relation("AtasanUsers", fields: [atasan_id], references: [id])
   bawahan      Users[] @relation("AtasanUsers")
   jabatan      Jabatan?  @relation(fields: [jabatan_id], references: [id])
   izin         Izin[]    @relation("UserIzin")
   verifikasi   VerifikasiIzin[] @relation("Verifikator")
+  Notifikasi   Notifikasi[]
 
   @@map("users")
 }
@@ -61,6 +63,16 @@ model JenisIzin {
   izin        Izin[]
 
   @@map("jenis_izin")
+}
+model Notifikasi {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  message   String
+  tipe      String    // izin_baru, izin_status, dll
+  status    String    @default("unread")  // unread | read
+  created_at DateTime @default(now())
+
+  users      Users      @relation(fields: [user_id], references: [id])
 }
 
 model Izin {
@@ -105,7 +117,7 @@ enum Role {
   admin
   karyawan
   hrd
-  kepala_sekolah
+  atasan
 }
 
 enum StatusIzin {

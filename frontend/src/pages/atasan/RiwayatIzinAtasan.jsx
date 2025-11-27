@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 
-export default function RiwayatIzin() {
+export default function RiwayatIzinAtasan() {
   const [data, setData] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [selected, setSelected] = useState(null);

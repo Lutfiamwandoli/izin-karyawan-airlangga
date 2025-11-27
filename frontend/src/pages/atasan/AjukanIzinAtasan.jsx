@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 
-export default function AjukanIzin() {
+export default function AjukanIzinAtasan() {
   const [jenis, setJenis] = useState([]);
   const [form, setForm] = useState({
     nama: "",
@@ -72,17 +72,6 @@ useEffect(() => {
     console.log(res);
     
     alert(res.data.message);
-    // Reset form
-    setForm({
-      jenis_izin_id: "",
-      jumlah_hari: "",
-      tanggal_mulai: "",
-      tanggal_selesai: "",
-      tanggal_masuk_kembali: "",
-      keperluan: "",
-    });
-
-    setBukti(null);
   };
 
   return (

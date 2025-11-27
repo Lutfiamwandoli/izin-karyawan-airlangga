@@ -22,7 +22,7 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, role: user.role, jabatan: user.jabatan },
+      { id: user.id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
@@ -30,7 +30,7 @@ export const login = async (req, res) => {
     let roleDesc = "karyawan";
     if (user.role === "admin") roleDesc = "admin";
     else if (user.role === "hrd") roleDesc = "HRD";
-    else if (user.role === "kepala_sekolah") roleDesc = "kepala sekolah";
+    else if (user.role === "atasan") roleDesc = "atasan";
 
     res.json({
       message: `Login berhasil (${roleDesc})`,

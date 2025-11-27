@@ -19,6 +19,15 @@ import Dashboard from "./pages/karyawan/Dashboard";
 import KaryawanLayout from "./pages/karyawan/KaryawanLayout";
 import AjukanIzin from "./pages/karyawan/AjukanIzin";
 import RiwayatIzin from "./pages/karyawan/RiwayatIzin";
+import UbahPassword from "./pages/karyawan/UbahPassword";
+import ProfilSaya from "./pages/karyawan/Profil";
+import AjukanIzinAtasan from "./pages/atasan/AjukanIzinAtasan";
+import DashboardAtasan from "./pages/atasan/DashboardAtasan";
+import RiwayatIzinAtasan from "./pages/atasan/RiwayatIzinAtasan";
+import UbahPasswordAtasan from "./pages/atasan/UbahPasswordAtasan";
+import ProfilSayaAtasan from "./pages/atasan/ProfilAtasan";
+import PengajuanIzin from "./pages/atasan/PengajuanIzin";
+import AtasanLayout from "./pages/atasan/AtasanLayout";
 
 const router = createBrowserRouter([
   {
@@ -54,10 +63,26 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard/> },
       { path: "izin/ajukan", element: <AjukanIzin/> },
-      { path: "izin", element: <RiwayatIzin/> }
+      { path: "izin", element: <RiwayatIzin/> },
+      { path: "password", element:<UbahPassword />},
+      { path: "profil", element: <ProfilSaya/>}
             
     ],
   },
+  {
+    path: "/atasan",
+    element: <AtasanLayout />,
+    children: [
+      { index: true, element: <DashboardAtasan/> },
+      { path: "izin/ajukan", element: <AjukanIzinAtasan/> },
+      { path: "izin", element: <RiwayatIzinAtasan/> },
+      { path: "password", element:<UbahPasswordAtasan />},
+      { path: "profil", element: <ProfilSayaAtasan/>},
+      { path: "pengajuan", element: <PengajuanIzin/>}
+            
+    ],
+  },
+  
   
 ]);
 

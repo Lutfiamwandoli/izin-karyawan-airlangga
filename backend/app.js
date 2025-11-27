@@ -8,14 +8,27 @@ import izinRoutes from "./src/routes/izinRoutes.js";
 
 dotenv.config();
 const app = express();
+import path from "path";
+import { fileURLToPath } from "url";
 
-app.use(cors());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // routes
 app.use("/api/izin", izinRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("Server berjalan dengan baik ✅");

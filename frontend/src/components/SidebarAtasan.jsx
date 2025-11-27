@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FiLogOut, FiFileText, FiKey, FiPlusCircle, FiHome } from "react-icons/fi";
 
-export default function SidebarKaryawan() {
+export default function SidebarAtasan() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -17,19 +17,23 @@ export default function SidebarKaryawan() {
       <h2 className="font-bold text-lg mb-6">SMK TI AIRLANGGA</h2>
 
       <nav className="flex flex-col gap-4 text-[15px]">
-        <Link to="/karyawan" className="flex gap-3 items-center hover:text-blue-700">
+        <Link to="/atasan" className="flex gap-3 items-center hover:text-blue-700">
           <FiHome /> Dashboard
         </Link>
 
-        <Link to="/karyawan/izin/ajukan" className="flex gap-3 items-center hover:text-blue-700">
+        <Link to="/atasan/izin/ajukan" className="flex gap-3 items-center hover:text-blue-700">
           <FiPlusCircle /> Ajukan Izin
         </Link>
 
-        <Link to="/karyawan/izin" className="flex gap-3 items-center hover:text-blue-700">
+        <Link to="/atasan/izin" className="flex gap-3 items-center hover:text-blue-700">
           <FiFileText /> Riwayat Izin
         </Link>
 
-        <Link to="/karyawan/password" className="flex gap-3 items-center hover:text-blue-700">
+        <Link to="/atasan/pengajuan" className="flex gap-3 items-center hover:text-blue-700">
+          <FiFileText /> Pengajuan Izin
+        </Link>
+
+        <Link to="/atasan/password" className="flex gap-3 items-center hover:text-blue-700">
           <FiKey /> Ubah Password
         </Link>
       </nav>

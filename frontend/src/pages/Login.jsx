@@ -15,14 +15,15 @@ export default function Login() {
     try {
       const res = await api.post("api/auth/login", { nik, password });
 
-      localStorage.setItem("token", res.data.token);
+localStorage.removeItem("token");
+localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert(res.data.message);
 
       const role = res.data.user.role;
       if (role === "admin") navigate("/admin");
-      else if (role === "hrd") navigate("/hrd");
+      else if (role === "hrd") navigate("/atasan");
       else if (role === "atasan") navigate("/atasan");
       else navigate("/karyawan");
 

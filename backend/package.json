@@ -18,6 +18,10 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "nodemon": "^3.1.10",
-    "prisma": "^6.19.0"
+    "pdf-image": "^2.0.0",
+    "pdf-lib": "^1.17.1",
+    "pdf-poppler": "^0.2.3",
+    "prisma": "^6.19.0",
+    "puppeteer": "^24.30.0"
   }
 }
