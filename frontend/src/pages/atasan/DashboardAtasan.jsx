@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { Link } from "react-router-dom";
 
 export default function DashboardAtasan() {
   const [data, setData] = useState([]);
@@ -14,8 +15,7 @@ export default function DashboardAtasan() {
   });
 
   useEffect(() => {
-    // --- Ambil izin milik atasan ---
-    api.get("api/izin/saya").then((res) => {
+    api.get("api/izin/bawahan").then((res) => {
       setData(res.data);
 
       setStats((prev) => ({
@@ -27,7 +27,6 @@ export default function DashboardAtasan() {
       }));
     });
 
-    // --- Ambil total izin bawahan ---
     api.get("api/izin/bawahan").then((res) => {
       setStats((prev) => ({
         ...prev,
@@ -35,11 +34,21 @@ export default function DashboardAtasan() {
       }));
     });
 
-    // --- Jenis izin ---
     api.get("api/izin/jenis-izin").then((res) => {
       setJenis(res.data);
     });
   }, []);
+  function Box({ title, value, to }) {
+  return (
+    <Link
+      to={to}
+      className="bg-blue-600 text-white rounded-xl p-5 text-center shadow hover:bg-blue-700 transition"
+    >
+      <div className="text-4xl font-bold">{value}</div>
+      <div>{title}</div>
+    </Link>
+  );
+}
 
   return (
     <div>
@@ -47,11 +56,12 @@ export default function DashboardAtasan() {
 
       {/* BOX STATISTIK */}
       <div className="grid grid-cols-4 gap-4 mt-6">
-        <Box title="Jumlah Izin" value={stats.totalSaya} />
-        <Box title="Jumlah Pengajuan" value={stats.totalBawahan} />
-        <Box title="Izin Disetujui" value={stats.disetujui} />
-        <Box title="Belum Disetujui" value={stats.belum} />
-      </div>
+  <Box title="Jumlah Izin" value={stats.totalSaya} to="/atasan/izin" />
+  <Box title="Jumlah Pengajuan" value={stats.totalBawahan} to="/atasan/pengajuan" />
+  <Box title="Izin Disetujui" value={stats.disetujui} to="/atasan/pengajuan?status=disetujui" />
+  <Box title="Belum Disetujui" value={stats.belum} to="/atasan/pengajuan?status=diajukan" />
+</div>
+
 
       <h2 className="mt-8 text-lg font-semibold">Riwayat Izin Saya</h2>
       <table className="mt-3 w-full bg-white border">

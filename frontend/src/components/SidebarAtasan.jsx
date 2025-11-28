@@ -11,6 +11,7 @@ export default function SidebarAtasan() {
     // Redirect ke halaman login
     navigate("/");
   };
+  
 
   return (
     <div className="w-64 bg-white shadow-md h-screen px-6 py-5 flex flex-col">

@@ -352,116 +352,192 @@ export const cetakIzinPDF = async (req, res) => {
 
     await page.setContent(`
       <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; font-size: 11px; }
-          .box { border: 1px solid #000; padding: 6px; margin-top: 5px; }
-          table { width: 100%; border-collapse: collapse; }
-          .ttd-box { border: 1px solid #000; height: 70px; text-align: center; padding-top: 50px; }
-        </style>
-      </head>
+<head>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      font-size: 12px; 
+      margin: 20px;
+      line-height: 1.4;
+    }
 
-      <body>
+    .kop-container {
+      border-bottom: 2px solid #000;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
 
-      <!-- ===========================
-           HALAMAN 1
-           =========================== -->
+    .kop-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.3;
+    }
 
-      <table>
-        <tr>
-          <td width="20%">
-            <img src="data:image/png;base64,${logoBase64}" width="90" />
-          </td>
-          <td width="60%" style="text-align:center;">
-            <b>FORMULIR<br>IJIN KETIDAKHADIRAN<br>KARYAWAN YAYASAN AIRLANGGA</b>
-          </td>
-          <td width="20%">
-            <div>No. Dok : -</div>
-            <div>Tgl : ${new Date().toLocaleDateString("id-ID")}</div>
-            <div>Revisi : -</div>
-            <div>Hal : 1/2</div>
-          </td>
-        </tr>
-      </table>
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+    }
 
-      <h3 style="text-align:center; margin-top:10px;">DATA KARYAWAN</h3>
+    .box { 
+      border: 1px solid #000; 
+      padding: 8px; 
+      margin-top: 10px; 
+      font-size: 12px;
+    }
 
-      <table style="font-size: 13px;">
-        <tr>
-          <td style="width:20%; font-weight:bold;">Nama</td>
-          <td style="width:35%;">: ${izin.user.nama}</td>
-          <td style="width:15%; font-weight:bold;">TMM/TMT</td>
-          <td style="width:30%;">: ${izin.user.tmm_tmt?.toISOString().slice(0,10)}</td>
-        </tr>
+    .ttd-box { 
+      border: 1px solid #000; 
+      height: 80px; 
+      text-align: center; 
+      vertical-align: bottom;
+      padding-bottom: 10px;
+      font-size: 12px;
+    }
 
-        <tr>
-          <td style="font-weight:bold;">NIK</td>
-          <td>: ${izin.user.nik}</td>
-          <td style="font-weight:bold;">Jabatan</td>
-          <td>: ${izin.user.jabatan?.nama}</td>
-        </tr>
+    th, td {
+      padding: 5px;
+      vertical-align: top;
+    }
 
-        <tr>
-          <td style="font-weight:bold;">Telp/HP</td>
-          <td>: ${izin.user.telp}</td>
-        </tr>
+    h3 { 
+      text-align: center; 
+      margin-top: 20px; 
+      font-size: 14px; 
+    }
+  </style>
+</head>
 
-        <tr>
-          <td style="font-weight:bold;">Divisi</td>
-          <td colspan="3">: SMK TI Airlangga Samarinda</td>
-        </tr>
-      </table>
+<body>
 
-      <div class="box">
-        <b>IJIN YANG DIMINTA</b><br><br>
+<!-- ===========================
+     KOP SURAT
+     =========================== -->
 
-        <table>
-          <tr>
-            <td>${checkbox("Sakit")} Ijin Sakit</td>
-            <td>${checkbox("Ijin Studi Lanjut")} Ijin Studi Lanjut</td>
-            <td>${checkbox("Keperluan Pribadi")} Ijin Keperluan Pribadi</td>
-          </tr>
-        </table>
+<div class="kop-container">
+  <table>
+    <tr>
+      <td width="20%">
+        <img src="data:image/png;base64,${logoBase64}" width="90" />
+      </td>
+      <td width="60%" class="kop-title">
+        FORMULIR<br>
+        IJIN KETIDAKHADIRAN<br>
+        KARYAWAN YAYASAN AIRLANGGA
+      </td>
+      <td width="20%" style="font-size:11px;">
+        <div>No. Dok : -</div>
+        <div>Tgl : ${new Date().toLocaleDateString("id-ID")}</div>
+        <div>Revisi : -</div>
+        <div>Hal : 1/2</div>
+      </td>
+    </tr>
+  </table>
+</div>
 
-        <br>
-        1. Jumlah Hari Ijin : <b>${izin.jumlah_hari}</b> Hari 
-        ( ${izin.tanggal_mulai.toISOString().slice(0,10)}
-          s/d ${izin.tanggal_selesai.toISOString().slice(0,10)} ) <br>
+<!-- ===========================
+     DATA KARYAWAN
+     =========================== -->
 
-        2. Masuk Kembali : ${izin.tanggal_masuk_kembali?.toISOString().slice(0,10)} <br>
-        3. Keperluan : ${izin.keperluan} <br>
-        4. Bukti : Terlampir di halaman berikutnya
-      </div>
+<h3>DATA KARYAWAN</h3>
 
-      <h3 style="text-align:center; margin-top:20px;">PERSETUJUAN DIVISI</h3>
+<table style="font-size:12px;">
+  <tr>
+    <td style="width:20%; font-weight:bold;">Nama</td>
+    <td style="width:35%;">: ${izin.user.nama}</td>
+    <td style="width:15%; font-weight:bold;">TMM/TMT</td>
+    <td style="width:30%;">: ${izin.user.tmm_tmt?.toISOString().slice(0,10)}</td>
+  </tr>
 
-      <table border="1">
-        <tr>
-          <th>Kepala Divisi</th>
-          <th>HRD Divisi</th>
-          <th>Atasan Langsung</th>
-        </tr>
+  <tr>
+    <td style="font-weight:bold;">NIK</td>
+    <td>: ${izin.user.nik}</td>
+    <td style="font-weight:bold;">Jabatan</td>
+    <td>: ${izin.user.jabatan?.nama}</td>
+  </tr>
 
-        <tr>
-          <td class="ttd-box">Muhammad Yani, S.Kom., M.T.I.</td>
-          <td class="ttd-box">Fardiyansyah Ibrahim, S.Kom</td>
-          <td class="ttd-box">${izin.user.jabatan?.atasan?.nama ?? "-"}</td>
-        </tr>
+  <tr>
+    <td style="font-weight:bold;">Telp/HP</td>
+    <td>: ${izin.user.telp}</td>
+    <td></td>
+    <td></td>
+  </tr>
 
-        <tr style="text-align:center;">
-          <td>${new Date().toLocaleDateString("id-ID")}</td>
-          <td>${new Date().toLocaleDateString("id-ID")}</td>
-          <td>${new Date().toLocaleDateString("id-ID")}</td>
-        </tr>
-      </table>
+  <tr>
+    <td style="font-weight:bold;">Divisi</td>
+    <td colspan="3">: SMK TI Airlangga Samarinda</td>
+  </tr>
+</table>
 
-      <!-- ===========================
-           HALAMAN 2 (BUKTI)
-           =========================== -->
+<!-- ===========================
+     JENIS IJIN
+     =========================== -->
 
-      <div style="page-break-before: always;"></div>
+<div class="box" style="font-size:13px;">
+  <b style="align-text:center;">IJIN YANG DIMINTA</b><br><br>
 
-      <h2 style="text-align:center;">Lampiran Bukti</h2>
+  <table style="width:100%; text-align:center;">
+    <tr>
+      <td style="width:33.33%; text-align:left;">
+        ${checkbox("Sakit")} Ijin Sakit
+      </td>
+      <td style="width:33.33%;">
+        ${checkbox("Ijin Studi Lanjut")} Ijin Studi Lanjut
+      </td>
+      <td style="width:33.33%; text-align:right;">
+        ${checkbox("Keperluan Pribadi")} Ijin Keperluan Pribadi
+      </td>
+    </tr>
+  </table>
+
+  <br>
+
+  1. Jumlah Hari Ijin : <b>${izin.jumlah_hari}</b> Hari  
+  ( ${izin.tanggal_mulai.toISOString().slice(0,10)} s/d ${izin.tanggal_selesai.toISOString().slice(0,10)} ) <br>
+
+  2. Masuk Kembali : ${izin.tanggal_masuk_kembali?.toISOString().slice(0,10)} <br>
+  3. Keperluan : ${izin.keperluan} <br>
+  4. Bukti : Terlampir di halaman berikutnya
+</div>
+
+
+<!-- ===========================
+     PERSETUJUAN DIVISI
+     =========================== -->
+
+<h3>PERSETUJUAN DIVISI</h3>
+
+<table border="1" style="font-size:12px;">
+  <tr style="font-weight:bold; text-align:center;">
+    <th>Kepala Divisi</th>
+    <th>HRD Divisi</th>
+    <th>Atasan Langsung</th>
+  </tr>
+
+  <tr>
+    <td class="ttd-box">Muhammad Yani, S.Kom., M.T.I.</td>
+    <td class="ttd-box">Fardiyansyah Ibrahim, S.Kom</td>
+    <td class="ttd-box">${izin.user.jabatan?.atasan?.nama ?? "-"}</td>
+  </tr>
+
+  <tr style="text-align:center; font-size:11px;">
+    <td>${new Date().toLocaleDateString("id-ID")}</td>
+    <td>${new Date().toLocaleDateString("id-ID")}</td>
+    <td>${new Date().toLocaleDateString("id-ID")}</td>
+  </tr>
+</table>
+
+<!-- ===========================
+     HALAMAN 2
+     =========================== -->
+
+<div style="page-break-before: always;"></div>
+
+<h2 style="text-align:center;">Lampiran Bukti</h2>
+
+</body>
+</html>
+
 
       ${
         buktiBase64
