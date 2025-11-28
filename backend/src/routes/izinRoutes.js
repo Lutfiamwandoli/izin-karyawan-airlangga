@@ -68,6 +68,7 @@ router.get(
 )
 
 router.patch( "/read/:id", verifyToken, readNotifikasi)
+router.patch("/read-all",verifyToken, readNotifikasi)
 
 router.get("/jenis-izin", verifyToken,
   allowRoles("karyawan","hrd", "atasan"), getJenisIzin);

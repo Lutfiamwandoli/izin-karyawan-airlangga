@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 export default function AjukanIzinAtasan() {
+  const navigate = useNavigate();
   const [jenis, setJenis] = useState([]);
   const [form, setForm] = useState({
     nama: "",
@@ -17,6 +19,7 @@ export default function AjukanIzinAtasan() {
   });
 
   const [bukti, setBukti] = useState(null);
+  
 
 useEffect(() => {
   api.get("api/izin/userbytoken")
@@ -72,6 +75,9 @@ useEffect(() => {
     console.log(res);
     
     alert(res.data.message);
+    console.log("Submit success -> redirect");
+
+    navigate("/atasan/izin")
   };
 
   return (

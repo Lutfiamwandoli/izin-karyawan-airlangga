@@ -286,7 +286,6 @@ export const getNotifikasi = async (req, res) => {
   }
 };
 
-// Tandai notifikasi sebagai dibaca
 export const readNotifikasi = async (req, res) => {
   try {
     const id = parseInt(req.params.id);

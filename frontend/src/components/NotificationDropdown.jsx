@@ -13,12 +13,12 @@ export default function NotificationDropdown() {
   };
 
   const markAsRead = async (id) => {
-    await api.put(`/api/izin/notifikasi/${id}/read`);
+    await api.patch(`/api/izin/read/${id}`);
     fetchNotif();
   };
 
   const markAll = async () => {
-    await api.put("/api/izin/notifikasi/read-all");
+    await api.patch("/api/izin/read-all");
     fetchNotif();
   };
 
