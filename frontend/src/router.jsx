@@ -14,7 +14,6 @@ import JabatanEdit from "./pages/admin/JabatanEdit";
 import AtasanList from "./pages/admin/AtasanList";
 import AtasanAdd from "./pages/admin/AtasanAdd";
 import AtasanEdit from "./pages/admin/AtasanEdit";
-import Login from "./pages/login";
 import Dashboard from "./pages/karyawan/Dashboard";
 import KaryawanLayout from "./pages/karyawan/KaryawanLayout";
 import AjukanIzin from "./pages/karyawan/AjukanIzin";
@@ -28,11 +27,12 @@ import UbahPasswordAtasan from "./pages/atasan/UbahPasswordAtasan";
 import ProfilSayaAtasan from "./pages/atasan/ProfilAtasan";
 import PengajuanIzin from "./pages/atasan/PengajuanIzin";
 import AtasanLayout from "./pages/atasan/AtasanLayout";
+import LoginForm from "./pages/login";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <LoginForm />,
   },
 
   {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Login() {
+export default function LoginForm() {
   const [nik, setNik] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
