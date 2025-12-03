@@ -52,20 +52,6 @@ export default function JabatanAdd() {
           onChange={(e) => setNama(e.target.value)}
         />
 
-        {/* Select Atasan */}
-        <label>Pilih Atasan</label>
-        <select
-          className="border p-2 w-full mb-4"
-          value={atasanId}
-          onChange={(e) => setAtasanId(e.target.value)}
-        >
-          <option value="">-- Tanpa Atasan --</option>
-          {atasanList.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.nama}
-            </option>
-          ))}
-        </select>
 
         <button className="px-4 py-2 bg-green-600 text-white rounded">
           Simpan

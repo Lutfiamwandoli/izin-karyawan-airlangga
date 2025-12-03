@@ -45,17 +45,7 @@ export default function JabatanEdit() {
           onChange={(e) => setNama(e.target.value)}
         />
 
-        <label>Atasan</label>
-        <select
-          className="select select-bordered w-full mb-3"
-          value={atasanId}
-          onChange={(e) => setAtasanId(e.target.value)}
-        >
-          <option value="">-- Tanpa Atasan --</option>
-          {atasan.map((a) => (
-            <option key={a.id} value={a.id}>{a.nama}</option>
-          ))}
-        </select>
+       
 
         <button className="btn btn-primary">Simpan</button>
       </form>
