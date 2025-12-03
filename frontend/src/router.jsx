@@ -27,12 +27,12 @@ import UbahPasswordAtasan from "./pages/atasan/UbahPasswordAtasan";
 import ProfilSayaAtasan from "./pages/atasan/ProfilAtasan";
 import PengajuanIzin from "./pages/atasan/PengajuanIzin";
 import AtasanLayout from "./pages/atasan/AtasanLayout";
-import LoginForm from "./pages/login";
+import LoginAja from "./pages/HalamanLogin";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginForm />,
+    element: <LoginAja />,
   },
 
   {
