@@ -11,7 +11,7 @@ import { error, log } from "console";
 
 
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
+const BASE_URL = process.env.BASE_URL || "http://192.168.105.133:5000";
 
 export const getIzin = async (req, res) => {
   try {
@@ -597,7 +597,7 @@ export const ubahpw = async (req, res) => {
 
 export const getProfil = async (req, res) => {
   try {
-    const userId = req.user.id; // dari middleware JWT
+    const userId = req.user.id; 
 
     const profil = await prisma.users.findUnique({
       where: { id: userId },
